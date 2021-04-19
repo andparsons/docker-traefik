@@ -55,7 +55,7 @@ version: "3.5"
 
 services:
   nginx:
-    container_name: "${COMPOSE_PROJECT_NAME:-app}_nginx"
+    container_name: "${COMPOSE_PROJECT_NAME?}_nginx"
     restart: "unless-stopped"
     image: "nginx:1.19-alpine"
     volumes:
@@ -65,9 +65,10 @@ services:
       - "./web:/var/www/html/web:rw"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-app}.tls=true"
-      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-app}.entrypoints=https"
-      - "traefik.http.routers.${COMPOSE_PROJECT_NAME:-app}.rule=Host(`${SITE:-app.9am.test}`)"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME?}.tls=true"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME?}.tls.domains[0].main=${PRIMARY_SITE_URL?}"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME?}.entrypoints=https"
+      - "traefik.http.routers.${COMPOSE_PROJECT_NAME?}.rule=Host(`${SITE?}`)"
     depends_on:
       - php
     networks:
@@ -75,7 +76,7 @@ services:
       - internal
 
   php:
-    container_name: "${COMPOSE_PROJECT_NAME:-app}_php"
+    container_name: "${COMPOSE_PROJECT_NAME?}_php"
     restart: "unless-stopped"
     image: "09am/craft-php:7.4-fpm-alpine"
     volumes:
@@ -88,14 +89,14 @@ services:
       - internal
 
   mysql:
-    container_name: "${COMPOSE_PROJECT_NAME:-app}_db"
+    container_name: "${COMPOSE_PROJECT_NAME?}_db"
     restart: "unless-stopped"
     image: "mariadb:10.1"
     environment:
       MYSQL_ROOT_PASSWORD: "root"
-      MYSQL_DATABASE: "${DB_DATABASE:-db_name}"
-      MYSQL_USER: "${DB_USER:-db_user}"
-      MYSQL_PASSWORD: "${DB_PASSWORD:-db_pass}"
+      MYSQL_DATABASE: "${DB_DATABASE?}"
+      MYSQL_USER: "${DB_USER?}"
+      MYSQL_PASSWORD: "${DB_PASSWORD?}"
     ports:
       - "3306:3306"
     expose:
