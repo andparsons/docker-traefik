@@ -21,7 +21,7 @@ echo "nameserver 127.0.0.1" | sudo tee -a /etc/resolver/test > /dev/null
 brew install mkcert
 brew install nss # for Firefox
 
-# Setup the local Root CA
+# Setup & authorise the local Root CA
 mkcert -install
 ```
 
@@ -37,7 +37,10 @@ docker network create external
 # Unfortunately you cannot create *.test wildcard certificate.
 mkcert -cert-file acme/local.crt -key-file acme/local.key "9am.test" "*.9am.test"
 
-# Start Traefik
+# Authorise the new certs in your local store
+mkcert -install
+
+# Start Traefik in detached mode
 docker-compose up -d
 
 # Go on https://9am.test you should have the traefik web dashboard serve over https
@@ -114,6 +117,8 @@ networks:
     external: true
 ```
 ```dotenv
+# Example .env
+
 # The environment Craft is currently running in ('dev', 'staging', 'production', etc.)
 ENVIRONMENT="dev"
 # The environment for webpack
