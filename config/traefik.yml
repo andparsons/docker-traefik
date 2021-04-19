@@ -1,0 +1,39 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+serversTransport:
+  insecureSkipVerify: true
+
+api:
+  insecure: true
+  dashboard: true
+  debug: false
+
+entryPoints:
+  http:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: "https"
+          scheme: "https"
+          permanent: true
+
+  https:
+    address: ":443"
+
+providers:
+  docker:
+    watch: false
+    exposedByDefault: false
+    swarmMode: false
+    network: external
+
+certificatesResolvers:
+  letsencrypt:
+    acme:
+      email: "andy@welove9am.com"
+      storage: "acme.json"
+      httpChallenge:
+        entryPoint: http

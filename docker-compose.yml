@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  traefik:
+    container_name: "traefik"
+    restart: "always"
+    image: "traefik:2.4.8"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./config/traefik.yml:/traefik.yml:ro"
+      - "./acme:/etc/traefik/acme:rw"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.entrypoints=https"
+      - "traefik.http.routers.traefik.rule=Host(`localhost`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+    networks:
+      - external
+
+networks:
+  external:
+    external: true
