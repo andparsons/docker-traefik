@@ -1,6 +1,16 @@
-version: "3.8"
+version: "3.5"
 
 services:
+  dnsmasq:
+    container_name: "dnsmasq"
+    restart: "always"
+    image: "gists/dnsmasq:latest"
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    volumes:
+      - "./dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf:ro"
+
   traefik:
     container_name: "traefik"
     restart: "always"
@@ -13,13 +23,16 @@ services:
       - "/etc/localtime:/etc/localtime:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
       - "./config/traefik.yml:/traefik.yml:ro"
+      - "./config/dynamic.yml:/dynamic.yml:ro"
       - "./acme:/etc/traefik/acme:rw"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.traefik.tls=true"
       - "traefik.http.routers.traefik.entrypoints=https"
-      - "traefik.http.routers.traefik.rule=Host(`localhost`)"
+      - "traefik.http.routers.traefik.rule=Host(`9am.test`)"
       - "traefik.http.routers.traefik.service=api@internal"
+    depends_on:
+      - dnsmasq
     networks:
       - external
 

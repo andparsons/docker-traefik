@@ -6,7 +6,7 @@ serversTransport:
   insecureSkipVerify: true
 
 api:
-  insecure: true
+  insecure: false
   dashboard: true
   debug: false
 
@@ -25,15 +25,19 @@ entryPoints:
 
 providers:
   docker:
-    watch: false
+    endpoint: "unix:///var/run/docker.sock"
+    watch: true
     exposedByDefault: false
     swarmMode: false
     network: external
+  file:
+    filename: "/dynamic.yml"
+    watch: false
 
-certificatesResolvers:
-  letsencrypt:
-    acme:
-      email: "andy@welove9am.com"
-      storage: "acme.json"
-      httpChallenge:
-        entryPoint: http
+#certificatesResolvers:
+#  letsencrypt:
+#    acme:
+#      email: "andy@welove9am.com"
+#      storage: "acme.json"
+#      httpChallenge:
+#        entryPoint: http
