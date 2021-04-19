@@ -39,5 +39,6 @@ providers:
 #    acme:
 #      email: "andy@welove9am.com"
 #      storage: "acme.json"
-#      httpChallenge:
-#        entryPoint: http
+#      tlsChallenge: true
+#      #httpChallenge:
+#      #  entryPoint: http
